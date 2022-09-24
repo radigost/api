@@ -1,0 +1,10 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: '1'
+      author: npoliakoff
+
+  - includeAll:
+      path: DML
+      relativeToChangelogFile: true
+

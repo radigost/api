@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: PROFILES/master.yaml
+      relativeToChangelogFile: true
