@@ -2,15 +2,15 @@
 -- changeset npoliakoff:202209241215
 CREATE TABLE user
 (
-    id       INT PRIMARY KEY,
-    email    VARCHAR(50),
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+    username    VARCHAR(50),
     password VARCHAR(250)
 );
 
 
 CREATE TABLE profile
 (
-    id         INT PRIMARY KEY,
+    id         INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(50),
     last_name  VARCHAR(50),
     age        INTEGER,
