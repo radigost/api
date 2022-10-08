@@ -26,55 +26,35 @@ public class ProfileService {
 
     public List<ProfileDto> getProfiles() {
         String query = "SELECT * FROM socialnetwork.profile";
-        return jdbcTemplate.query(
-            query,
-            (rs, rowNum) -> ProfileDto.builder()
-                .id(rs.getInt("id"))
-                .firstName(rs.getString("first_name"))
-                .lastName(rs.getString("last_name"))
-                .yearsOld(rs.getInt("age"))
-                .gender(rs.getString("gender"))
-                .interests(rs.getString("interests"))
-                .city(rs.getString("city"))
-                .build()
-        );
+        return jdbcTemplate.query(query,
+            (rs, rowNum) -> ProfileDto.builder().id(rs.getInt("id")).firstName(rs.getString("first_name"))
+                .lastName(rs.getString("last_name")).yearsOld(rs.getInt("age")).gender(rs.getString("gender"))
+                .interests(rs.getString("interests")).city(rs.getString("city")).build());
     }
 
     public ProfileDto getProfileById(int id) {
         String query = "SELECT * FROM socialnetwork.profile WHERE id=?";
-        // TODO fix deprecated method
-        return jdbcTemplate.queryForObject(
-            query,
-            new Object[] {id},
-            (rs, rowNum) -> ProfileDto.builder()
-                .id(rs.getInt("id"))
-                .firstName(rs.getString("first_name"))
-                .lastName(rs.getString("last_name"))
-                .yearsOld(rs.getInt("age"))
-                .gender(rs.getString("gender"))
-                .interests(rs.getString("interests"))
-                .city(rs.getString("city"))
-                .build()
-        );
+        return jdbcTemplate.queryForObject(query,
+            (rs, rowNum) -> ProfileDto.builder().id(rs.getInt("id")).firstName(rs.getString("first_name"))
+                .lastName(rs.getString("last_name")).yearsOld(rs.getInt("age")).gender(rs.getString("gender"))
+                .interests(rs.getString("interests")).city(rs.getString("city")).build(), id);
     }
 
     public boolean createProfile(ProfileDto profile) {
         log.info(profile.toString());
 
         var userId = profile.getOwnerId();
-        var exists = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM socialnetwork.profile WHERE owner_id=?", Integer.class, new Object[] {userId});
+        var exists =
+            jdbcTemplate.queryForObject("SELECT COUNT(*) FROM socialnetwork.profile WHERE owner_id=?", Integer.class,
+                userId);
         if (exists == null || exists.equals(0)) {
             SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(profile);
 
             var result = namedParameterJdbcTemplate.update(
-                "INSERT INTO socialnetwork.profile" +
-                    " (first_name,last_name,age,gender,interests,city,owner_id)" +
-                    " VALUES (:firstName,:lastName,:yearsOld,:gender,:interests,:city,:ownerId)",
-                namedParameters
-            );
+                "INSERT INTO socialnetwork.profile" + " (first_name,last_name,age,gender,interests,city,owner_id)" +
+                    " VALUES (:firstName,:lastName,:yearsOld,:gender,:interests,:city,:ownerId)", namedParameters);
             if (result == 1) {
-                log.info(String.format("created profile for userId %d", userId));
+                log.info(String.format("Created profile for userId %d", userId));
                 return true;
             }
         }

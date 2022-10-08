@@ -19,25 +19,16 @@ public class AuthService {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public boolean authenticate(AuthData authData) {
-        var encodedPassword = jdbcTemplate.queryForObject(
-            "SELECT password FROM socialnetwork.user WHERE username=?",
-            String.class,
-            authData.getUsername()
-        );
-        return passwordEncoder.matches(authData.getPassword(), encodedPassword);
-    }
-
     public boolean register(AuthData authData) {
         var username = authData.getUsername();
         if (username != null) {
             var exists = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM socialnetwork.user WHERE username=?", Integer.class, new Object[] {username});
+                "SELECT COUNT(*) FROM socialnetwork.user WHERE username=?", Integer.class, username);
             if (exists == null || exists.equals(0)) {
                 var password = authData.getPassword();
                 if (password != null) {
                     var result = jdbcTemplate.update(
-                        "INSERT INTO socialnetwork.user (username, password) VALUES (?,?)",
+                        "INSERT INTO socialnetwork.user (username, password, role) VALUES (?,?, 'ROLE_USER')",
                         username,
                         passwordEncoder.encode(password)
                     );

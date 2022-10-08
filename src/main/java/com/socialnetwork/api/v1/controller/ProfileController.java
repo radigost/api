@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,22 +24,23 @@ public class ProfileController {
     ProfileService profileService;
 
     @GetMapping("")
-    public List<ProfileDto> getProfiles(
-    ) {
+    public List<ProfileDto> getProfiles() {
         return profileService.getProfiles();
     }
 
     @GetMapping("/{id}")
-    public ProfileDto getProfile(
-        @PathVariable int id
-    ) {
+    public ProfileDto getProfile(@PathVariable int id) {
+        // TODO prevent sending java exceptions in case of non-existed profile
         return profileService.getProfileById(id);
     }
 
     @PostMapping("")
-    public boolean createProfile(
-        @RequestBody ProfileDto profileDto
-    ) {
-        return profileService.createProfile(profileDto);
+    public ResponseEntity<?> createProfile(@RequestBody ProfileDto profileDto) {
+        // TODO add logic that ROLE_ADMIN can create any profile, but ROLE_USER can create only its own profile
+        var res = profileService.createProfile(profileDto);
+        if (res) {
+            return ResponseEntity.ok("Profile created");
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

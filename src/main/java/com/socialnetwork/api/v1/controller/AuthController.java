@@ -4,6 +4,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.socialnetwork.api.service.AuthService;
 import com.socialnetwork.api.v1.domain.AuthData;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,24 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@Slf4j
 public class AuthController {
 
     private AuthService authService;
 
-    @PostMapping(value = "login",
-        consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public boolean authenticate(@RequestBody AuthData authData) {
-        return authService.authenticate(authData);
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @PostMapping(value = "login", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> authenticate(@RequestBody AuthData authData) {
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(authData.getUsername(), authData.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return ResponseEntity.ok("Login successfull");
     }
 
-    @PostMapping(value = "register",
-        consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public boolean register(@RequestBody AuthData authData) {
-        System.out.printf(authData.toString());
-
-        return authService.register(authData);
+    @PostMapping(value = "register", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> register(@RequestBody AuthData authData) {
+        var res = authService.register(authData);
+        if (res) {
+            return ResponseEntity.ok("User created");
+        }
+        return ResponseEntity.badRequest().build();
     }
-
 
 }
 
