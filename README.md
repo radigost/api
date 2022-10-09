@@ -7,4 +7,4 @@ Project is java application with jdbctemplate as JDBC driver wrapper and Spring 
 2. Run the build from target folder  `java -jar target/api-0.0.1-SNAPSHOT.jar`
 
 ## Postman documentation
-[postman documentation](auth.postman_collection.json)
+[postman documentation](api.postman_collection.json)

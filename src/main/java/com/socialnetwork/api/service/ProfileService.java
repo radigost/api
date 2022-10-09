@@ -27,17 +27,31 @@ public class ProfileService {
     public List<ProfileDto> getProfiles() {
         String query = "SELECT * FROM socialnetwork.profile";
         return jdbcTemplate.query(query,
-            (rs, rowNum) -> ProfileDto.builder().id(rs.getInt("id")).firstName(rs.getString("first_name"))
-                .lastName(rs.getString("last_name")).yearsOld(rs.getInt("age")).gender(rs.getString("gender"))
-                .interests(rs.getString("interests")).city(rs.getString("city")).build());
+            (rs, rowNum) -> ProfileDto.builder()
+                .id(rs.getInt("id"))
+                .firstName(rs.getString("first_name"))
+                .lastName(rs.getString("last_name"))
+                .yearsOld(rs.getInt("age"))
+                .gender(rs.getString("gender"))
+                .interests(rs.getString("interests"))
+                .city(rs.getString("city"))
+                .ownerId(rs.getInt("owner_id"))
+                .build());
     }
 
     public ProfileDto getProfileById(int id) {
         String query = "SELECT * FROM socialnetwork.profile WHERE id=?";
         return jdbcTemplate.queryForObject(query,
-            (rs, rowNum) -> ProfileDto.builder().id(rs.getInt("id")).firstName(rs.getString("first_name"))
-                .lastName(rs.getString("last_name")).yearsOld(rs.getInt("age")).gender(rs.getString("gender"))
-                .interests(rs.getString("interests")).city(rs.getString("city")).build(), id);
+            (rs, rowNum) -> ProfileDto.builder()
+                .id(rs.getInt("id"))
+                .firstName(rs.getString("first_name"))
+                .lastName(rs.getString("last_name"))
+                .yearsOld(rs.getInt("age"))
+                .gender(rs.getString("gender"))
+                .interests(rs.getString("interests"))
+                .city(rs.getString("city"))
+                .ownerId(rs.getInt("owner_id"))
+                .build(), id);
     }
 
     public boolean createProfile(ProfileDto profile) {
