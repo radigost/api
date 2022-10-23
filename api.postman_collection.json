@@ -120,7 +120,7 @@
 					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
 				},
 				"url": {
-					"raw": "localhost:8080/api/profile",
+					"raw": "localhost:8080/api/profile?firstName=Kristi&lastName=De Bernardis",
 					"host": [
 						"localhost"
 					],
@@ -128,6 +128,16 @@
 					"path": [
 						"api",
 						"profile"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "Kristi"
+						},
+						{
+							"key": "lastName",
+							"value": "De Bernardis"
+						}
 					]
 				}
 			},
