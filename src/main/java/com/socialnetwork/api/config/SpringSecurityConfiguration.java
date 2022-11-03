@@ -2,7 +2,9 @@ package com.socialnetwork.api.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 import com.socialnetwork.api.service.UserService;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,8 +24,12 @@ public class SpringSecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
     UserService userService;
+
+    @Autowired
+    public SpringSecurityConfiguration(@Qualifier("db_main") DataSource dataSource, UserService userService){
+        this.userService = userService;
+    }
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {

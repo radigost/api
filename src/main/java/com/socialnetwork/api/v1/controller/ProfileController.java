@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,7 +78,13 @@ public class ProfileController {
         // TODO add logic that ROLE_ADMIN can create any profile, but ROLE_USER can create only its own profile
         var res = profileService.createProfile(profileDto);
         if (res) {
-            return ResponseEntity.ok("Profile created");
+            return ResponseEntity.ok(
+                String.format(
+                    "Profile created for ownerId %d, %s %s",
+                    profileDto.getOwnerId(),
+                    profileDto.getFirstName(),
+                    profileDto.getLastName()
+                ));
         }
         return ResponseEntity.badRequest().build();
     }

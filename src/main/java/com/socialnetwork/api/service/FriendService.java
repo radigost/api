@@ -3,6 +3,7 @@ package com.socialnetwork.api.service;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class FriendService {
     @Autowired
+    @Qualifier("jdbcTemplate2")
     JdbcTemplate jdbcTemplate;
 
 

@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,13 +16,19 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ProfileService {
-    JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Qualifier("jdbcTemplate1")
+    private JdbcTemplate jdbcTemplate1;
+
+    @Autowired
+    @Qualifier("jdbcTemplate2")
+    private JdbcTemplate jdbcTemplate2;
 
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    public ProfileService(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public ProfileService(@Qualifier("db_main") DataSource dataSource) {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -30,7 +37,7 @@ public class ProfileService {
             " WHERE profile.first_name LIKE ?" +
             " AND profile.last_name LIKE ?" +
             "ORDER BY id";
-        return jdbcTemplate.query(query,
+        return jdbcTemplate2.query(query,
             (rs, rowNum) -> ProfileDto.builder()
                 .id(rs.getInt("id"))
                 .firstName(rs.getString("first_name"))
@@ -45,7 +52,7 @@ public class ProfileService {
 
     public List<ProfileDto> getProfiles() {
         String query = "SELECT * FROM socialnetwork.profile";
-        return jdbcTemplate.query(query,
+        return jdbcTemplate2.query(query,
             (rs, rowNum) -> ProfileDto.builder()
                 .id(rs.getInt("id"))
                 .firstName(rs.getString("first_name"))
@@ -60,7 +67,7 @@ public class ProfileService {
 
     public ProfileDto getProfileById(int id) {
         String query = "SELECT * FROM socialnetwork.profile WHERE id=?";
-        return jdbcTemplate.queryForObject(query,
+        return jdbcTemplate2.queryForObject(query,
             (rs, rowNum) -> ProfileDto.builder()
                 .id(rs.getInt("id"))
                 .firstName(rs.getString("first_name"))
@@ -78,7 +85,7 @@ public class ProfileService {
 
         var userId = profile.getOwnerId();
         var exists =
-            jdbcTemplate.queryForObject("SELECT COUNT(*) FROM socialnetwork.profile WHERE owner_id=?", Integer.class,
+            jdbcTemplate1.queryForObject("SELECT COUNT(*) FROM socialnetwork.profile WHERE owner_id=?", Integer.class,
                 userId);
         if (exists == null || exists.equals(0)) {
             SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(profile);
