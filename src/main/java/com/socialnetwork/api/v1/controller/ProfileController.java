@@ -1,6 +1,7 @@
 package com.socialnetwork.api.v1.controller;
 
 import com.socialnetwork.api.service.FriendService;
+import com.socialnetwork.api.service.MessageService;
 import com.socialnetwork.api.service.ProfileService;
 import com.socialnetwork.api.v1.domain.ProfileDto;
 import java.util.List;
@@ -31,6 +32,9 @@ public class ProfileController {
     @Autowired
     FriendService friendService;
 
+    @Autowired
+    MessageService messageService;
+
     @GetMapping("")
     public List<ProfileDto> getProfiles(
         @RequestParam(required = false) String firstName,
@@ -58,6 +62,28 @@ public class ProfileController {
             )
         );
 
+    }
+
+    @SneakyThrows
+    @GetMapping("/{id}/rooms")
+    public ResponseEntity<?> getRooms(@PathVariable int id) {
+        return ResponseEntity.ok(
+            Map.of(
+                "rooms",
+                messageService.getListOfRooms(id)
+            )
+        );
+    }
+
+    @SneakyThrows
+    @GetMapping("/{id}/rooms/{roomId}")
+    public ResponseEntity<?> getRooms(@PathVariable int id,@PathVariable int roomId) {
+        return ResponseEntity.ok(
+            Map.of(
+                "messages",
+                messageService.getMessages(roomId)
+            )
+        );
     }
 
     @PostMapping("/{id}/friend")
