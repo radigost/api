@@ -1,6 +1,11 @@
 package com.socialnetwork.api.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.sql.Array;
 import java.util.List;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,14 +20,19 @@ public class FriendService {
     @Qualifier("jdbcTemplate2")
     JdbcTemplate jdbcTemplate;
 
+    ObjectMapper mapper = new ObjectMapper();
 
-    public String getListOfFriendsIds(int userId) {
+
+    @SneakyThrows
+    public JsonNode getListOfFriendsIds(int userId) {
         String query = "SELECT friends FROM socialnetwork.friend WHERE id=?";
-        return jdbcTemplate.queryForObject(
+        var listString =  jdbcTemplate.query(
             query,
             (rs, rowNum) ->
                 rs.getString("friends"),
             userId);
+        var res  = mapper.readTree(listString.get(0));
+        return res;
     }
 
     public boolean addFriend(int userId, List<Integer> friendIds) {

@@ -7,7 +7,12 @@ class WebSocketController {
     _onConnected(frame) {
         this.setConnected(true);
         console.log('Connected: ' + frame);
-        this.stompClient.subscribe('/topic/mural', this.showMessage);
+        fetch("/api/auth/me").then((response) => response.json()).then((res)=>{
+            console.log(res);
+            this.stompClient.subscribe(`/topic/feed.${res.id}`, this.showMessage);
+        })
+
+
     }
 
     setConnected(connected) {

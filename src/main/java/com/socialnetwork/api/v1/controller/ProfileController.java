@@ -40,11 +40,7 @@ public class ProfileController {
 
     @Autowired
     FeedService feedService;
-    private SimpMessagingTemplate template;
-    @Autowired
-    public ProfileController(SimpMessagingTemplate template) {
-        this.template = template;
-    }
+
 
 
     @GetMapping("")
@@ -70,7 +66,6 @@ public class ProfileController {
         @RequestBody String text
     ) {
         feedService.postFeed(id, text);
-        template.convertAndSend("/topic/mural",text);
         return text;
     }
 

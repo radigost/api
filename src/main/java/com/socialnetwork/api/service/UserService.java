@@ -1,5 +1,6 @@
 package com.socialnetwork.api.service;
 
+import com.socialnetwork.api.v1.domain.MeDto;
 import com.socialnetwork.api.v1.domain.UserDto;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,13 @@ public class UserService implements UserDetailsService {
         }
         var grantedAuthority = new SimpleGrantedAuthority(user.getRole());
         return new User(user.getUsername(), user.getPassword(), List.of(grantedAuthority));
+    }
+
+    public MeDto getUserIdByUsername(String username){
+        var query = "SELECT * FROM socialnetwork.user WHERE username=?";
+        var user = jdbcTemplate1.queryForObject(query,
+            (rs, rowNum) -> MeDto.builder().id(rs.getInt("id")).username(rs.getString("username"))
+                .role(rs.getString("role")).build(), username);
+        return user;
     }
 }
