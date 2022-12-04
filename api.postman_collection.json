@@ -208,6 +208,74 @@
 			"response": []
 		},
 		{
+			"name": "list of rooms for the user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/543/rooms",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"543",
+						"rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "messages for the room",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/543/rooms",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"543",
+						"rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "add a new friend",
 			"request": {
 				"method": "POST",

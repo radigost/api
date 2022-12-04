@@ -12,6 +12,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +40,12 @@ public class ProfileController {
 
     @Autowired
     FeedService feedService;
+    private SimpMessagingTemplate template;
+    @Autowired
+    public ProfileController(SimpMessagingTemplate template) {
+        this.template = template;
+    }
+
 
     @GetMapping("")
     public List<ProfileDto> getProfiles(
@@ -56,11 +65,13 @@ public class ProfileController {
     }
 
     @PostMapping("/{id}/feed")
-    public boolean postToFeed(
+    public String postToFeed(
         @PathVariable int id,
         @RequestBody String text
     ) {
-        return feedService.postFeed(id, text);
+        feedService.postFeed(id, text);
+        template.convertAndSend("/topic/mural",text);
+        return text;
     }
 
     @SneakyThrows
