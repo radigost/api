@@ -1,5 +1,6 @@
 package com.socialnetwork.api.v1.controller;
 
+import com.socialnetwork.api.service.FeedService;
 import com.socialnetwork.api.service.FriendService;
 import com.socialnetwork.api.service.MessageService;
 import com.socialnetwork.api.service.ProfileService;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,12 +35,15 @@ public class ProfileController {
     @Autowired
     MessageService messageService;
 
+    @Autowired
+    FeedService feedService;
+
     @GetMapping("")
     public List<ProfileDto> getProfiles(
         @RequestParam(required = false) String firstName,
         @RequestParam(required = false) String lastName
-        ) {
-        if (firstName!=null && lastName != null){
+    ) {
+        if (firstName != null && lastName != null) {
             return profileService.getProfiles(firstName, lastName);
         }
         return profileService.getProfiles();
@@ -50,6 +53,14 @@ public class ProfileController {
     public ProfileDto getProfile(@PathVariable int id) {
         // TODO prevent sending java exceptions in case of non-existed profile
         return profileService.getProfileById(id);
+    }
+
+    @PostMapping("/{id}/feed")
+    public boolean postToFeed(
+        @PathVariable int id,
+        @RequestBody String text
+    ) {
+        return feedService.postFeed(id, text);
     }
 
     @SneakyThrows
@@ -77,7 +88,7 @@ public class ProfileController {
 
     @SneakyThrows
     @GetMapping("/{id}/rooms/{roomId}")
-    public ResponseEntity<?> getRooms(@PathVariable int id,@PathVariable int roomId) {
+    public ResponseEntity<?> getRooms(@PathVariable int id, @PathVariable int roomId) {
         return ResponseEntity.ok(
             Map.of(
                 "messages",
