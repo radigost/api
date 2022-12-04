@@ -1,6 +1,7 @@
 package com.socialnetwork.api.service;
 
 import com.socialnetwork.api.v1.domain.UserDto;
+import com.socialnetwork.api.v1.domain.UserWithPasswordDto;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,12 +24,30 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String query = "SELECT * FROM socialnetwork.user WHERE username=?";
         var user = jdbcTemplate1.queryForObject(query,
-            (rs, rowNum) -> UserDto.builder().id(rs.getInt("id")).username(rs.getString("username"))
-                .password(rs.getString("password")).role(rs.getString("role")).build(), username);
+            (rs, rowNum) ->
+                UserWithPasswordDto.builder()
+                    .id(rs.getInt("id"))
+                    .username(rs.getString("username"))
+                    .password(rs.getString("password"))
+                    .role(rs.getString("role"))
+                    .build(),
+            username);
         if (user == null) {
             throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
         var grantedAuthority = new SimpleGrantedAuthority(user.getRole());
         return new User(user.getUsername(), user.getPassword(), List.of(grantedAuthority));
+    }
+
+    public UserDto getUserIdByUsername(String username) {
+        var query = "SELECT * FROM socialnetwork.user WHERE username=?";
+        return jdbcTemplate1.queryForObject(query,
+            (rs, rowNum) ->
+                UserDto.builder()
+                    .id(rs.getInt("id"))
+                    .username(rs.getString("username"))
+                    .role(rs.getString("role"))
+                    .build(),
+            username);
     }
 }
