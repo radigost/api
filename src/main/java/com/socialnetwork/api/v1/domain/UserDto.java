@@ -6,12 +6,9 @@ import lombok.Data;
 @Data
 @Builder
 public class UserDto {
-
     int id;
 
     String username;
-
-    String password;
 
     String role;
 }

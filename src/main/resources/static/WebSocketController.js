@@ -7,12 +7,10 @@ class WebSocketController {
     _onConnected(frame) {
         this.setConnected(true);
         console.log('Connected: ' + frame);
-        fetch("/api/auth/me").then((response) => response.json()).then((res)=>{
+        fetch("/api/auth/me").then((response) => response.json()).then((res) => {
             console.log(res);
             this.stompClient.subscribe(`/topic/feed.${res.id}`, this.showMessage);
         })
-
-
     }
 
     setConnected(connected) {
@@ -29,7 +27,7 @@ class WebSocketController {
     }
 
     disconnect() {
-        if(this.stompClient != null) {
+        if (this.stompClient != null) {
             this.stompClient.disconnect();
         }
         this.setConnected(false);
@@ -46,8 +44,9 @@ class WebSocketController {
         var p = document.createElement('p');
         p.style.wordWrap = 'break-word';
         p.appendChild(document.createTextNode(new Date() + message.body));
-        response.insertBefore(p,response.firstChild);
+        response.insertBefore(p, response.firstChild);
     }
 
 }
+
 var webSocket = new WebSocketController();
