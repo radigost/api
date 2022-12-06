@@ -67,6 +67,14 @@
 			"response": []
 		},
 		{
+			"name": "get information about current user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
 			"name": "create profile",
 			"request": {
 				"method": "POST",
@@ -303,6 +311,14 @@
 						"friend"
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post in a feed",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		}
