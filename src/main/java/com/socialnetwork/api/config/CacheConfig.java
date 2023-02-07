@@ -1,0 +1,22 @@
+package com.socialnetwork.api.config;
+
+import javax.sql.DataSource;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class CacheConfig {
+
+    @Bean(name = "memoryCache")
+    public RedissonClient memoryCache() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://localhost:6379");
+        RedissonClient redisson = Redisson.create();
+        return redisson;
+    }
+}

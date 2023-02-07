@@ -7,7 +7,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
 public class SpringJdbcConfig {
@@ -18,7 +17,7 @@ public class SpringJdbcConfig {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "jdbcTemplate1")
+    @Bean(name = "jdbcTemplateMain")
     public JdbcTemplate jdbcTemplate1(@Qualifier("db_main") DataSource ds) {
         return new JdbcTemplate(ds);
     }

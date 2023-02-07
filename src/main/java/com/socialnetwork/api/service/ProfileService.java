@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
     @Autowired
-    @Qualifier("jdbcTemplate1")
-    private JdbcTemplate jdbcTemplate1;
+    @Qualifier("jdbcTemplateMain")
+    private JdbcTemplate jdbcTemplateMain;
 
     @Autowired
     @Qualifier("jdbcTemplate2")
@@ -85,7 +85,7 @@ public class ProfileService {
 
         var userId = profile.getOwnerId();
         var exists =
-            jdbcTemplate1.queryForObject("SELECT COUNT(*) FROM socialnetwork.profile WHERE owner_id=?", Integer.class,
+            jdbcTemplateMain.queryForObject("SELECT COUNT(*) FROM socialnetwork.profile WHERE owner_id=?", Integer.class,
                 userId);
         if (exists == null || exists.equals(0)) {
             SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(profile);

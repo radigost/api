@@ -1,15 +1,10 @@
 package com.socialnetwork.api.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.sql.Array;
 import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,33 +12,32 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class FriendService {
     @Autowired
-    @Qualifier("jdbcTemplate2")
+    @Qualifier("jdbcTemplateMain")
     JdbcTemplate jdbcTemplate;
 
-    ObjectMapper mapper = new ObjectMapper();
-
-
     @SneakyThrows
-    public JsonNode getListOfFriendsIds(int userId) {
-        String query = "SELECT friends FROM socialnetwork.friend WHERE id=?";
-        var listString =  jdbcTemplate.query(
+    public List<Integer> getListOfFollowers(int profileId) {
+        String query = "SELECT * FROM socialnetwork.followers WHERE followee_id=?";
+        var listString = jdbcTemplate.query(
             query,
             (rs, rowNum) ->
-                rs.getString("friends"),
-            userId);
-        var res  = mapper.readTree(listString.get(0));
-        return res;
+                rs.getInt("follower_id"),
+            profileId);
+
+        return !listString.isEmpty() ? listString : List.of();
     }
 
-    public boolean addFriend(int userId, List<Integer> friendIds) {
-        log.info("adding friends {} and {}", userId, friendIds);
-        var friendsjson = new JSONArray(friendIds).toString();
+    @SneakyThrows
+    public boolean addFriend(int profileId, List<Integer> friendIds) {
+        log.info("adding friends {} and {}", profileId, friendIds);
 
-        var result = jdbcTemplate.update(
-            "INSERT INTO socialnetwork.friend (id, friends) VALUES (?,?)",
-            userId,
-            friendsjson
-        );
-        return result == 1;
+        friendIds.forEach(followeeId -> {
+            jdbcTemplate.update(
+                "INSERT INTO socialnetwork.followers (follower_id, followee_id) VALUES (?,?)",
+                profileId,
+                followeeId
+            );
+        });
+        return true;
     }
 }

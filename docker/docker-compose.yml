@@ -5,3 +5,7 @@ services:
       - 5672:5672
       - 61613:61613
       - 15672:15672
+  redis:
+    image: redis
+    ports:
+      - 6379:6379

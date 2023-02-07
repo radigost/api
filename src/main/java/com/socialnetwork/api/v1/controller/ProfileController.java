@@ -1,9 +1,12 @@
 package com.socialnetwork.api.v1.controller;
 
+import com.socialnetwork.api.service.FriendService;
 import com.socialnetwork.api.service.ProfileService;
 import com.socialnetwork.api.v1.domain.ProfileDto;
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
     private ProfileService profileService;
+    private FriendService friendService;
 
 
     @PostMapping("")
@@ -52,8 +56,32 @@ public class ProfileController {
 
     @GetMapping("/{id}")
     public ProfileDto getProfile(@PathVariable int id) {
-        // TODO prevent sending java exceptions in case of non-existed profile
+        // FIXME prevent sending java exceptions in case of non-existed profile
         return profileService.getProfileById(id);
+    }
+
+    @PostMapping("/{id}/friend")
+    public ResponseEntity<?> addFriend(
+        @PathVariable int id,
+        @RequestBody List<Integer> friendIds
+    ) {
+        var res = friendService.addFriend(id, friendIds);
+        if (res) {
+            return ResponseEntity.ok("Added list of friends");
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @SneakyThrows
+    @GetMapping("/{id}/friend")
+    public ResponseEntity<?> getFriends(@PathVariable int id) {
+        return ResponseEntity.ok(
+            Map.of(
+                "friends",
+                friendService.getListOfFollowers(id)
+            )
+        );
+
     }
 
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    @Qualifier("jdbcTemplate1")
+    @Qualifier("jdbcTemplateMain")
     private JdbcTemplate jdbcTemplate1;
 
     @Override
