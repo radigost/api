@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>Spring WebSocket Messaging</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+            integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/WebSocketController.js"></script>
+</head>
+<body onload="webSocket.disconnect()">
+<div>
+    <div>
+        <button id="connect" onclick="webSocket.connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="webSocket.disconnect();">
+            Disconnect
+        </button>
+    </div>
+    <br/>
+    <div id="mural">
+        <input type="text" id="text" placeholder="Write a message..."/>
+        <button id="sendMessage" onclick="webSocket.sendMessage();">Send</button>
+        <p id="response"></p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+persistence:
+  messages:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: mypass
+
+server:
+  port: 8081
+
+opentracing:
+  jaeger:
+    service-name: OpenTracingChatApp
+    enabled: true
+    udp-sender:
+      host: localhost

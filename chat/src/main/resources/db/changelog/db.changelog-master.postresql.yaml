@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: postgresql/master.yaml
+      relativeToChangelogFile: true

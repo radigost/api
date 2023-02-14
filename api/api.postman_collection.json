@@ -1,0 +1,403 @@
+{
+	"info": {
+		"_postman_id": "cf3f9335-550a-42ca-97c0-90076187cac6",
+		"name": "api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1550839"
+	},
+	"item": [
+		{
+			"name": "register user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"bob_dylan@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/auth/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"bob_dylan@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get information about current user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "create profile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\":\"Bob\",\n    \"lastName\":\"Dylan\",\n    \"yearsOld\":5,\n    \"gender\":\"male\",\n    \"interests\":\"alpinism, biking\",\n    \"city\":\"Moscow\",\n    \"ownerId\":1\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile?=bobshka",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "bobshka"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list of profiles",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile?firstName=Kristi&lastName=De Bernardis",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "Kristi"
+						},
+						{
+							"key": "lastName",
+							"value": "De Bernardis"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get profile by profile id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add a new follower",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[1,2,3]"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/3/friend",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"3",
+						"friend"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list of followers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[legacy] list of rooms for the user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/543/rooms",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"543",
+						"rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list of rooms for the user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/543/rooms",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"543",
+						"rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[legacy] messages for the room",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/543/rooms/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"543",
+						"rooms",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "messages for the room",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sadf@mail.ru\",\n    \"password\":\"qwerty\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/profile/543/rooms",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"profile",
+						"543",
+						"rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post in a feed",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get a feed for profile",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
