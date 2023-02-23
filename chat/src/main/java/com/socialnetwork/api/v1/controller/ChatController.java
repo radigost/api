@@ -1,6 +1,7 @@
 package com.socialnetwork.api.v1.controller;
 
 import com.google.common.collect.ImmutableMap;
+import com.socialnetwork.api.service.MessageSagaService;
 import com.socialnetwork.api.service.MessageService;
 import io.jaegertracing.internal.JaegerTracer;
 import io.opentracing.Scope;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class ChatController {
     private MessageService messageService;
+
+    private MessageSagaService messageSagaService;
 
     @Qualifier("tracer")
     private JaegerTracer tracer;
@@ -63,7 +66,7 @@ public class ChatController {
         try (Scope scope = tracer.scopeManager().activate(span)) {
             span.setTag("profileID", profileId);
 
-            messageService.postMessageSaga(profileId, roomId, text);
+            messageSagaService.postMessageSaga(profileId, roomId, text);
 //TODO to make responce faster, we need to response after just storing the message in db, but return that the status is "pending"
             span.finish();
             return ResponseEntity.ok().build();

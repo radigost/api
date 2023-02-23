@@ -77,19 +77,6 @@ public class MessageService {
             roomId);
     }
 
-    public boolean postMessageSaga(int profileId, int roomId, String text) {
-        var messageId = saveMessagePending(roomId, text, profileId);
-
-        var isAllCountersIncreased = increaseCounterForAllParticipantsInChat(roomId, profileId);
-        if (isAllCountersIncreased){
-            saveMessageAproved(messageId);
-        } else
-        {
-            saveMessageRejected(messageId);
-        }
-        return true;
-    }
-
 
     private boolean increaseCounterForAllParticipantsInChat(int roomId, int posterProfileId){
         var participants = getChatParticipants(roomId);
@@ -101,7 +88,7 @@ public class MessageService {
         });
     }
 
-    private Number saveMessagePending(int roomId, String text, int profileId) {
+    public Number saveMessagePending(int roomId, String text, int profileId) {
         var date = ZonedDateTime.now().toLocalDateTime();
         String query =
             "INSERT into messages (roomid,text,timestamp,status,poster_id) values (?,?,?,'RECEIVED_PENDING'::message_status_type,?) RETURNING id";
@@ -121,13 +108,13 @@ public class MessageService {
         return keyHolder.getKey();
     }
 
-    private boolean saveMessageAproved(Number messageId) {
+    public boolean saveMessageAproved(Number messageId) {
         String query = "UPDATE messages SET status='RECEIVED'::message_status_type WHERE id=?";
         var res = jdbcTemplate.update(
             query, messageId
         );
         return true;
-    }    private boolean saveMessageRejected(Number messageId) {
+    }    public boolean saveMessageRejected(Number messageId) {
         String query = "UPDATE messages SET status='RECEIVED_REJECTED'::message_status_type WHERE id=?";
         var res = jdbcTemplate.update(
             query, messageId
@@ -136,7 +123,7 @@ public class MessageService {
     }
 
     @SneakyThrows
-    private List<Integer> getChatParticipants(int roomId) {
+    public List<Integer> getChatParticipants(int roomId) {
         String query = "SELECT participants FROM rooms WHERE id=?";
         List<Array> res = jdbcTemplate.query(
             query,
@@ -147,7 +134,7 @@ public class MessageService {
         return new ArrayList<>(Arrays.asList(r));
     }
 
-    private boolean callToIncreaseCounter(int profileId, int chatId, int value) {
+    public boolean callToIncreaseCounter(int profileId, int chatId, int value) {
         Span span = this.tracer.buildSpan("app.chat.service.request-to-increase-count").start();
         try (Scope scope = tracer.scopeManager().activate(span, true)) {
             HttpUrl url = new HttpUrl.Builder().scheme("http").host(COUNTER_URL).port(COUNTER_API_PORT)
