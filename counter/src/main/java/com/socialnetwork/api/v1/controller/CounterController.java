@@ -63,7 +63,8 @@ public class CounterController {
         @RequestHeader HttpHeaders headers,
         @RequestBody Integer numberOfNewMessages
     ) {
-        Span span = startServerSpan(tracer, headers, "app.chat.request.counter");
+//        FIXME cointer controller does not fall into the same span bucket
+        Span span = startServerSpan(tracer, headers, "app.counter.request.increase-counter");
         try (Scope scope = tracer.scopeManager().activate(span)) {
             span.setTag("profileId", chatId);
 

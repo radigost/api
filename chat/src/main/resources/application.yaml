@@ -7,6 +7,14 @@ persistence:
 server:
   port: 8081
 
+servicediscovery:
+  api:
+    url: localhost
+    port: 8080
+  counter:
+    url: localhost
+    port: 8082
+
 opentracing:
   jaeger:
     service-name: OpenTracingChatApp

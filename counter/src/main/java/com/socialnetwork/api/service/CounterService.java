@@ -1,6 +1,5 @@
 package com.socialnetwork.api.service;
 
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,32 +16,29 @@ public class CounterService {
 
     public Integer updateCounter(int chatId, int numberOfNewMessages, int profileId) {
         var numberOfExistingMessagesList = getNumberOfMessagesInDb(chatId, profileId);
-        if (numberOfExistingMessagesList.size() > 0) {
-            String query = "UPDATE counter SET count=? WHERE chat_id=?";
-            var res = jdbcTemplate.update(
-                query, numberOfNewMessages + numberOfExistingMessagesList.get(0), chatId
+        if (numberOfExistingMessagesList > 0) {
+            String query = "UPDATE counter SET count=? WHERE chat_id=? AND profile_id=?";
+            jdbcTemplate.update(
+                query, numberOfNewMessages + numberOfExistingMessagesList, chatId, profileId
             );
         } else {
             String query = "INSERT into counter (chat_id,profile_id,count) values (?,?,?)";
-            var res = jdbcTemplate.update(
-                query, chatId,profileId, numberOfNewMessages
-            );
         }
-        return getNumberOfMessagesInDb(chatId,profileId).get(0);
+        return getNumberOfMessagesInDb(chatId, profileId);
     }
 
     public Integer getNumberOfMessages(int chatId, int profileId) {
         var res = getNumberOfMessagesInDb(chatId, profileId);
-        return res.size() > 0 ? res.get(0) : 0;
+        return res > 0 ? res : 0;
     }
 
-    private List<Integer> getNumberOfMessagesInDb(int chatId, int profileId) {
+    private Integer getNumberOfMessagesInDb(int chatId, int profileId) {
         String query = "SELECT count FROM counter WHERE chat_id=? AND profile_id=?";
         var res = jdbcTemplate.query(
             query, (rs, rowNum) ->
                 rs.getInt("count"), chatId, profileId
         );
-        return res;
+        return res.get(0);
     }
 
 }

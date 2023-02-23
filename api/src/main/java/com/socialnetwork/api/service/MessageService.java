@@ -1,10 +1,6 @@
 package com.socialnetwork.api.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.socialnetwork.api.v1.domain.MessageDto;
 import io.jaegertracing.internal.JaegerTracer;
@@ -14,7 +10,6 @@ import io.opentracing.log.Fields;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
@@ -90,6 +85,7 @@ public class MessageService {
                 .addPathSegment(String.valueOf(roomId))
                 .build();
             var response = makeRequest(url);
+
             Map<String, List<MessageDto>> prop = mapper.readValue(response.body().string(), Map.class);
             return prop.get("messages");
         } finally {
@@ -105,8 +101,7 @@ public class MessageService {
             Tags.SPAN_KIND.set(activeSpan, Tags.SPAN_KIND_CLIENT);
             Tags.HTTP_METHOD.set(activeSpan, "GET");
             Tags.HTTP_URL.set(activeSpan, url.toString());
-            tracer.inject(activeSpan.context(), Format.Builtin.HTTP_HEADERS,
-                new RequestBuilderCarrier(requestBuilder));
+            tracer.inject(activeSpan.context(), Format.Builtin.HTTP_HEADERS, new RequestBuilderCarrier(requestBuilder));
             Request request = requestBuilder.build();
             Response response = httpClient.newCall(request).execute();
             Tags.HTTP_STATUS.set(activeSpan, response.code());
@@ -119,7 +114,6 @@ public class MessageService {
             tracer.activeSpan().log(ImmutableMap.of(Fields.EVENT, "error", Fields.ERROR_OBJECT, e));
             throw new RuntimeException(e);
         }
-
     }
 
 

@@ -19,6 +19,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,19 +52,40 @@ public class ChatController {
         }
     }
 
+    @PostMapping("/{profileId}/rooms/{roomId}")
+    public ResponseEntity<?> postMessage(
+        @PathVariable int profileId,
+        @PathVariable int roomId,
+        @RequestHeader HttpHeaders headers,
+        @RequestBody String text
+    ) {
+        Span span = startServerSpan(tracer, headers, "app.chat.request.post-message");
+        try (Scope scope = tracer.scopeManager().activate(span)) {
+            span.setTag("profileID", profileId);
+
+            messageService.postMessageSaga(profileId, roomId, text);
+//TODO to make responce faster, we need to response after just storing the message in db, but return that the status is "pending"
+            span.finish();
+            return ResponseEntity.ok().build();
+        } finally {
+            span.finish();
+        }
+    }
+
+
     @SneakyThrows
-    @GetMapping("/{id}/rooms/{roomId}")
-    public ResponseEntity<?> getMessages(@PathVariable int id, @PathVariable int roomId,
-                                      @RequestHeader HttpHeaders headers) {
+    @GetMapping("/{profileId}/rooms/{roomId}")
+    public ResponseEntity<?> getMessages(@PathVariable int profileId, @PathVariable int roomId,
+                                         @RequestHeader HttpHeaders headers) {
         Span span = startServerSpan(tracer, headers, "app.chat.request.get-list-of-messages");
         try (Scope scope = tracer.scopeManager().activate(span)) {
-            span.setTag("profileID", id);
+            span.setTag("profileID", profileId);
             var res = this.messageService.getMessages(roomId);
             span.log(ImmutableMap.of("event", "result", "value", res));
             span.finish();
             return ResponseEntity.ok(
                 Map.of(
-                    "messages",res
+                    "messages", res
                 )
             );
         } finally {
