@@ -1,4 +1,17 @@
 services:
+  mysql-main:
+    image: mysql/mysql-server:5.7.37
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: socialnetwork
+    ports:
+      - 3306:3306
+    networks:
+      - mysql
+    volumes:
+      - ./mysql-main/my.cfg:/etc/my.cfg
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -9,14 +22,18 @@ services:
     image: redis
     ports:
       - 6379:6379
-#  kong:
-#      image: kong
-  zipkin:
-    image: openzipkin/zipkin
+  tarantool-np:
+    build: ./tarantool
+    volumes:
+      - ./tarantool/volume:/var/lib/tarantool
+    networks:
+      - mysql
     ports:
-      - 9411:9411
-
-
+      - 3301:3301
+  tarantool-replication-con:
+    build: ./tarantool replication
+    networks:
+      - mysql
   jaeger:
     image: jaegertracing/all-in-one:1.42
     environment:
@@ -33,9 +50,7 @@ services:
       - 14268:14268
       - 14269:14269
       - 9411:9411
-
-
-#  mysql-main:
-#    image: mysql/mysql-server:5.7.37
-#    ports:
-#      - 3309:3309
+networks:
+  mysql:
+    external: true
+    name: mysql
