@@ -1,0 +1,126 @@
+services:
+  mysql-main:
+    image: mysql/mysql-server:5.7.37
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: socialnetwork
+    ports:
+      - 3306:3306
+    networks:
+      - mysql
+    volumes:
+      - ./mysql-main/my.cfg:/etc/my.cfg
+  rabbitmq:
+    image: rabbitmq:3-management
+    networks:
+      - mysql
+    ports:
+      - 5672:5672
+      - 61613:61613
+      - 15672:15672
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - mysql
+  tarantool-np:
+    build: ./tarantool
+    volumes:
+      - ./tarantool/volume:/var/lib/tarantool
+    networks:
+      - mysql
+    ports:
+      - 3301:3301
+#  tarantool-replication-con:
+#    build: ./tarantool replication
+#    networks:
+#      - mysql
+  jaeger:
+    image: jaegertracing/all-in-one:1.42
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=9411
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 9411:9411
+    networks:
+      - mysql
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - mysql
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - 3000:3000
+    networks:
+      - mysql
+  app-chat:
+    image: socialnetwork-app-chat:latest
+    ports:
+      - 8081:8081
+    networks:
+      - mysql
+  postgresql:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: mypass
+    ports:
+      - 5432:5432
+    networks:
+      - mysql
+  zabbix:
+    image: zabbix/zabbix-server-pgsql
+    networks:
+      - mysql
+    ports:
+      - 10051:10051
+      - 10052:10052
+      - 80:80
+    environment:
+      DB_SERVER_HOST: 172.18.0.9
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypass
+  zabbix-web-client:
+    image: zabbix/zabbix-web-nginx-pgsql
+    networks:
+      - mysql
+    ports:
+      - 8083:80
+      - 8084:8080
+      - 8085:8443
+    environment:
+      DB_SERVER_HOST: 172.18.0.9
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypass
+      ZBX_SERVER_HOST: 172.18.0.11
+      PHP_TZ: Europe/Moscow
+  zabbix-agent:
+    privileged: true
+    image: zabbix/zabbix-agent
+    environment:
+#      ZBX_HOSTNAME: 172.18.0.10
+      ZBX_SERVER_HOST: 172.18.0.11
+    networks:
+      - mysql
+networks:
+  mysql:
+    external: true
+    name: mysql
+
