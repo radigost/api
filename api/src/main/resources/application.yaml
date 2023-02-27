@@ -2,7 +2,7 @@
 
 persistence:
   main:
-    jdbcUrl: jdbc:mysql://localhost:3309/socialnetwork
+    jdbcUrl: jdbc:mysql://localhost:3306/socialnetwork
     username: root
     password: root
   replica:
